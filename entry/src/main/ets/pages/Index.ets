@@ -2,6 +2,7 @@ import router from '@ohos.router';
 import { BusinessError } from '@ohos.base';
 import { ColorSet } from '../test/EnumTest'
 import { TestMain } from '../test/TestMain'
+import { StorageManager } from '../storage/StorageManager'
 
 @Observed
 class Message {
@@ -17,12 +18,17 @@ class Message {
  * @Component, @State 是装饰器
  * struct 自定义组件
  */
-@Entry({ routeName: 'main' })
+@Entry({ routeName: 'main', storage: StorageManager.getInstance().getSharedStorage('main') })
 @Component
 struct Index {
   // @State message: Message = new Message('Hello World');
   // @Provide('provide_message') message: Message = new Message('Hello World');
   @State message: Message = new Message('Hello World')
+  @StorageLink('propA') @Watch('propAChange') propA: number = 1
+
+  propAChange() {
+    console.debug(`propA = ${this.propA}`)
+  }
 
   build() {
     Row() {
@@ -74,6 +80,14 @@ struct Index {
             console.error('failed code:' + err.code + ', message = ' + err.message)
           })
         })
+
+        // local storage
+        Text(`propA = ${this.propA}`)
+          .margin({ top: 20 })
+          .fontSize(30)
+          .onClick(() => {
+            this.propA++
+          })
       }
       .width('100%')
     }

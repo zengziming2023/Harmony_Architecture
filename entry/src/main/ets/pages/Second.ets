@@ -1,9 +1,11 @@
 import router from '@ohos.router'
+import { StorageManager } from '../storage/StorageManager'
 
-@Entry({ routeName: 'second' })
+@Entry({ routeName: 'second', storage: StorageManager.getInstance().getSharedStorage('main') })
 @Component
 struct Second {
   @State message: string = 'Second Page'
+  @StorageLink('propA') propA: number = 1
 
   build() {
     Row() {
@@ -26,6 +28,7 @@ struct Second {
         .height('5%')
         .onClick(() => {
           console.debug('back')
+          this.propA++
           router.back()
         })
       }
