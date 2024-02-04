@@ -25,6 +25,7 @@ struct Index {
   // @Provide('provide_message') message: Message = new Message('Hello World');
   @State message: Message = new Message('Hello World')
   @StorageLink('propA') @Watch('propAChange') propA: number = 1
+  @State text: string = ''
 
   propAChange() {
     console.debug(`propA = ${this.propA}`)
@@ -87,6 +88,17 @@ struct Index {
           .fontSize(30)
           .onClick(() => {
             this.propA++
+          })
+
+        //
+        Text(this.text)
+          .fontSize(30)
+          .fontColor(Color.Red)
+        TextInput({ text: this.text, placeholder: 'pls input..', controller: new TextInputController() })
+          .fontSize(30)
+          .fontColor(Color.Blue)
+          .onChange((value) => {
+            this.text = value
           })
       }
       .width('100%')
