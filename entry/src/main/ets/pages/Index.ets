@@ -3,6 +3,8 @@ import { BusinessError } from '@ohos.base';
 import { ColorSet } from '../test/EnumTest'
 import { TestMain } from '../test/TestMain'
 import { StorageManager } from '../storage/StorageManager'
+import common from '@ohos.app.ability.common';
+import Want from '@ohos.app.ability.Want';
 
 @Observed
 class Message {
@@ -31,6 +33,15 @@ struct Index {
     console.debug(`propA = ${this.propA}`)
   }
 
+  private context = getContext(this) as common.UIAbilityContext
+
+  startOtherAbility() {
+    let want: Want = {
+      // want 参数信息，参考intent
+    }
+    this.context.startAbility(want)
+  }
+
   build() {
     Row() {
       Column() {
@@ -41,6 +52,7 @@ struct Index {
             // this.textClick(this.message)
             // this.updateText(this.message)
             this.updateText2()
+            this.context.eventHub.emit('event1', 'test event hub..')
           })
 
         // this.textBuilder(this.message)

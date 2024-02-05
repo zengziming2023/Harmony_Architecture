@@ -7,10 +7,22 @@ import window from '@ohos.window';
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
+    let context = this.context
+    console.info(`${context.abilityInfo.bundleName}`)
+
+    let eventHub = context.eventHub
+    eventHub.on('event1', this.onEvent1)
+  }
+
+  onEvent1(data: string) {
+    console.info(`receive ${data}`)
   }
 
   onDestroy(): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
+    let eventHub = this.context.eventHub
+    eventHub.off('event1')
+
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
