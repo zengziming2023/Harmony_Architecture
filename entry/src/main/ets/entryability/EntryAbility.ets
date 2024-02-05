@@ -3,8 +3,11 @@ import hilog from '@ohos.hilog';
 import UIAbility from '@ohos.app.ability.UIAbility';
 import Want from '@ohos.app.ability.Want';
 import window from '@ohos.window';
+import { UIContext } from '@ohos.arkui.UIContext';
 
 export default class EntryAbility extends UIAbility {
+  private uiContext: UIContext | undefined = undefined
+
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
     let context = this.context
@@ -14,8 +17,11 @@ export default class EntryAbility extends UIAbility {
     eventHub.on('event1', this.onEvent1)
   }
 
-  onEvent1(data: string) {
-    console.info(`receive ${data}`)
+  onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam) {
+    // parse want and launchParam
+    this.uiContext?.getRouter()?.pushUrl({
+      url: 'pages/Index'
+    })
   }
 
   onDestroy(): void {
@@ -36,6 +42,10 @@ export default class EntryAbility extends UIAbility {
       }
       hilog.info(0x0000, 'testTag', 'Succeeded in loading the content. Data: %{public}s', JSON.stringify(data) ?? '');
     });
+
+    windowStage.getMainWindow().then((window) => {
+      this.uiContext = window.getUIContext()
+    })
   }
 
   onWindowStageDestroy(): void {
@@ -51,5 +61,9 @@ export default class EntryAbility extends UIAbility {
   onBackground(): void {
     // Ability has back to background
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onBackground');
+  }
+
+  onEvent1(data: string) {
+    console.info(`receive ${data}`)
   }
 }
